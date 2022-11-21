@@ -4,45 +4,44 @@
 #include <vector>
 #include <sstream>
 #include <istream>
+#include <list>
 
 using namespace std;
 
 vector<string> csv_read_row(istream &file, char delimiter);
 
 int main(int argc, char *argv[]){
+    list<char> special {'\'', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '<', '>', '?', '/'};
     string str_buf;
+    for(char t: special){
+        cout << t << endl;
+    }
 
     fstream train_file_ham;
     train_file_ham.open(".\\csv\\train\\dataset_ham_train100.csv");
     fstream train_file_spam;
     train_file_spam.open(".\\csv\\train\\dataset_spam_train100.csv");
 
-    // ifstream train_file_ham(".\\csv\\train\\dataset_ham_train100.csv");
-    // ifstream train_file_spam(".\\csv\\train\\dataset_spam_train100.csv");
-    
-    // if(train_file_ham.fail()){
-    //     return (cout << "햄 파일 없음" << endl) && 0;
-    // }
-    
-    // if(train_file_spam.fail()){
-    //     return (cout << "스팸 파일 없음" << endl) && 0;
-    // }
-
-    // while (train_file_ham.good()){
-    //     vector<string> row = csv_read_row(train_file_ham, ',');
-    //     if(!row[0].find("#")) continue;
-    //     else{
-    //         for (int i = 0, leng = row.size() - 2; i < leng; i++){
-    //             cout << "[" << row[i] << "]" << "\t";
-    //         }
-    //         cout << endl;
+    int i = 1;
+    // while(!train_file_ham.eof()){
+    //     getline(train_file_ham,str_buf,',');
+    //     if(i==3){
+    //         cout<<str_buf<<endl;
+    //         i = 1;
     //     }
+    //     i++; 
+    //     cout << "야호!!"<<endl;      
     // }
-
-    while(!train_file_ham.eof()){
-        getline(train_file_ham,str_buf,',');
-        cout<<str_buf<<endl;        
-    }
+    // i = 1;
+    // while(!train_file_spam.eof()){
+    //     getline(train_file_spam,str_buf,',');
+    //     if(i==3){
+    //         cout<<str_buf<<endl;
+    //         i = 1;
+    //     }
+    //     i++; 
+    //     cout << "무야호!!"<<endl;      
+    // }
     train_file_ham.close();
     train_file_spam.close();
     return 0;
