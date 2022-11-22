@@ -15,14 +15,14 @@ vector<string> split(string str, char delimiter);
 
 int main(int argc, char *argv[]){
     // list<char> special {'\'', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '<', '>', '?', '/'};
-    list<string> special {"\'", "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "<", ">", "?", "/"};
+    list<string> special {"\'", "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "<", ">", "?", "/", ".", ",", "\n", " ", ":", ";", "", "-", "\"\"", "_", "{", "}", "[", "]", "|", "\"Subject:"};
     list<string> stopwords_list;
     map<string, int> word_in_ham;
     map<string, int> word_in_spam;
     string str_buf;
 
     ifstream train_file_ham(".\\csv\\train\\dataset_ham_train100.csv");
-    fstream train_file_spam(".\\csv\\train\\dataset_spam_train100.csv");
+    ifstream train_file_spam(".\\csv\\train\\dataset_spam_train100.csv");
 
     string line;
 	ifstream stopwords_file("stopwords.txt"); 
@@ -38,16 +38,38 @@ int main(int argc, char *argv[]){
     //     cout << s << endl;
     // }
     
-          
+    // bool a =  find(special.begin(),special.end(), "\"\"") == special.end();
+    // if(a) cout<< "yes" <<endl;
+    // else cout <<"no" << endl;
     int i = 1;
     if(train_file_ham.is_open()){
         while (getline(train_file_ham,str_buf,',')){
             if(i==3){
                 vector<string> result = split(str_buf, ' ');
                 for (int j=0; j < result.size(); j++){
-                    if((find(stopwords_list.begin(),stopwords_list.end(), result[j]) != stopwords_list.end()) && (find(special.begin(),special.end(), result[j]) != special.end())){
-                        ++word_in_ham[result[j]];
-                        cout <<result[j] << " : " << word_in_ham[result[j]] << endl;
+                    int npos;
+                    npos = result[j].find_first_not_of(' ');
+                    result[j].erase(0, npos);
+                    npos = result[j].find_last_not_of(' ');
+	                result[j].erase(npos+1);
+                    //  cout <<result[j] << endl;
+                    if(result[j].find('\n') > 0){
+                       vector<string> result2 = split(result[j], '\n');
+                       for (int k = 0; k < result2.size(); k++)
+                       {
+                        if((find(stopwords_list.begin(),stopwords_list.end(), result2[k]) == stopwords_list.end()) && (find(special.begin(),special.end(), result2[k]) == special.end())){
+                            ++word_in_ham[result2[k]];
+                            // cout <<result2[k] << " from 2: " << word_in_ham[result2[k]] << endl;
+                        }
+                            
+                       }
+                       
+                    }
+                    else{
+                        if((find(stopwords_list.begin(),stopwords_list.end(), result[j]) == stopwords_list.end()) && (find(special.begin(),special.end(), result[j]) == special.end())){
+                            ++word_in_ham[result[j]];
+                            // cout <<result[j] << " from 1: " << word_in_ham[result[j]] << endl;
+                        }
                     }
                 }
                 i = 1;
@@ -56,14 +78,38 @@ int main(int argc, char *argv[]){
         }
         train_file_ham.close();
     }
-
+    
     i = 1;
     if(train_file_spam.is_open()){
         while (getline(train_file_spam,str_buf,',')){
             if(i==3){
                 vector<string> result = split(str_buf, ' ');
                 for (int j=0; j < result.size(); j++){
-                    // cout << result[j] << endl;
+                    int npos;
+                    npos = result[j].find_first_not_of(' ');
+                    result[j].erase(0, npos);
+                    npos = result[j].find_last_not_of(' ');
+	                result[j].erase(npos+1);
+                    //  cout <<result[j] << endl;
+                    if(result[j].find('\n') > 0){
+                       vector<string> result2 = split(result[j], '\n');
+                       for (int k = 0; k < result2.size(); k++)
+                       {
+                        if((find(stopwords_list.begin(),stopwords_list.end(), result2[k]) == stopwords_list.end()) && (find(special.begin(),special.end(), result2[k]) == special.end())){
+                            ++word_in_spam[result2[k]];
+                            // cout <<result2[k] << " from 2: " << word_in_spam[result2[k]] << endl;
+                        }
+                            
+                       }
+                       
+                    }
+                    else{
+                        if((find(stopwords_list.begin(),stopwords_list.end(), result[j]) == stopwords_list.end()) && (find(special.begin(),special.end(), result[j]) == special.end())){
+                            ++word_in_spam[result[j]];
+                            // cout <<result[j] << " from 1: " << word_in_spam[result[j]] << endl;
+                        }
+                    }
+                    
                 }
                 i = 1;
             }
@@ -71,7 +117,7 @@ int main(int argc, char *argv[]){
         }
         train_file_spam.close();
     }
-
+    // cout <<" result[j]" << endl;
     // train_file_ham.close();
     // train_file_spam.close();
     return 0;
