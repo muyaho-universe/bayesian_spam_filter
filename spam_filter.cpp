@@ -7,10 +7,13 @@
 #include <list>
 #include <map>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
-#define HAM_SIZE 100;
-#define SPAM_SIZE 100;
+#define TRAIN_HAM_SIZE 100
+#define TRAIN_SPAM_SIZE 100
+#define TEST_HAM_SIZE 20
+#define TEST_SPAM_SIZE 20
 vector<string> split(string str, char delimiter);
 
 int main(int argc, char *argv[]){
@@ -99,9 +102,7 @@ int main(int argc, char *argv[]){
                             ++word_in_spam[result2[k]];
                             // cout <<result2[k] << " from 2: " << word_in_spam[result2[k]] << endl;
                         }
-                            
                        }
-                       
                     }
                     else{
                         if((find(stopwords_list.begin(),stopwords_list.end(), result[j]) == stopwords_list.end()) && (find(special.begin(),special.end(), result[j]) == special.end())){
@@ -109,7 +110,6 @@ int main(int argc, char *argv[]){
                             // cout <<result[j] << " from 1: " << word_in_spam[result[j]] << endl;
                         }
                     }
-                    
                 }
                 i = 1;
             }
@@ -117,9 +117,76 @@ int main(int argc, char *argv[]){
         }
         train_file_spam.close();
     }
-    // cout <<" result[j]" << endl;
-    // train_file_ham.close();
-    // train_file_spam.close();
+   
+
+    ifstream test_file_ham(".\\csv\\test\\dataset_ham_test20.csv");
+    ifstream test_file_spam(".\\csv\\test\\dataset_spam_test20.csv");
+    i = 1;
+    double threshold = 0.8;
+    int count_spam = 0;
+    int count_ham = 0;
+    list<int> p;        // spam
+    list<int> q;        // not spam 
+    if(test_file_ham.is_open()){
+        while (getline(test_file_ham,str_buf,',')){
+            if(i==3){
+                vector<string> result = split(str_buf, ' ');
+                double r;
+                
+                for (int j=0; j < result.size(); j++){
+                    int npos;
+                    npos = result[j].find_first_not_of(' ');
+                    result[j].erase(0, npos);
+                    npos = result[j].find_last_not_of(' ');
+	                result[j].erase(npos+1);
+                    //  cout <<result[j] << endl;
+                    if(result[j].find('\n') > 0){
+                       vector<string> result2 = split(result[j], '\n');
+                       for (int k = 0; k < result2.size(); k++)
+                       {
+                        if((find(stopwords_list.begin(),stopwords_list.end(), result2[k]) == stopwords_list.end()) && (find(special.begin(),special.end(), result2[k]) == special.end())){
+                            p.push_back(word_in_spam[result2[k]]);
+                            q.push_back(word_in_ham[result2[k]]);
+                        }
+                            
+                       }
+                       
+                    }
+                    else{
+                        if((find(stopwords_list.begin(),stopwords_list.end(), result[j]) == stopwords_list.end()) && (find(special.begin(),special.end(), result[j]) == special.end())){
+                            p.push_back(word_in_spam[result[j]]);
+                            q.push_back(word_in_ham[result[j]]);
+                        }
+                    }
+                }
+                
+                i = 1;
+            }
+            i++;
+        }
+        train_file_ham.close();
+    }
+    int all_p = 1;
+    double p_v;
+    for(int t : p){
+        all_p *= t;
+    }
+    p_v = all_p / pow(TRAIN_SPAM_SIZE, p.size());
+
+    int all_q = 1;
+    double q_v;
+    for(int t : q){
+        all_q *= t;
+    }
+    q_v = all_q / pow(TRAIN_HAM_SIZE, q.size());
+
+    r = p_v/ (p_v + q_v);
+
+    if(r > threshold) count_spam++;
+    else count_ham++;
+    cout << count_ham << endl;
+    cout << count_spam << endl;
+
     return 0;
 }
 
