@@ -127,19 +127,19 @@ int main(int argc, char *argv[]){
     int count_ham = 0;
     list<int> p;        // spam
     list<int> q;        // not spam 
+    int c = 0;
     if(test_file_ham.is_open()){
         while (getline(test_file_ham,str_buf,',')){
+            c++;
             if(i==3){
-                vector<string> result = split(str_buf, ' ');
-                double r;
-                
+                vector<string> result = split(str_buf, ' ');                
                 for (int j=0; j < result.size(); j++){
                     int npos;
                     npos = result[j].find_first_not_of(' ');
                     result[j].erase(0, npos);
                     npos = result[j].find_last_not_of(' ');
 	                result[j].erase(npos+1);
-                    //  cout <<result[j] << endl;
+                     cout <<result[j] << endl;
                     if(result[j].find('\n') > 0){
                        vector<string> result2 = split(result[j], '\n');
                        for (int k = 0; k < result2.size(); k++)
@@ -164,6 +164,7 @@ int main(int argc, char *argv[]){
             }
             i++;
         }
+        cout << c << endl;
         train_file_ham.close();
     }
     int all_p = 1;
@@ -179,13 +180,13 @@ int main(int argc, char *argv[]){
         all_q *= t;
     }
     q_v = all_q / pow(TRAIN_HAM_SIZE, q.size());
-
+    double r;
     r = p_v/ (p_v + q_v);
 
     if(r > threshold) count_spam++;
     else count_ham++;
-    cout << count_ham << endl;
-    cout << count_spam << endl;
+    
+    // cout << count_spam << endl;
 
     return 0;
 }
