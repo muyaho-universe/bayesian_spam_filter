@@ -15,9 +15,9 @@ public:
     class iterator
     {
     private:
-       vector<vector<string>> row_iterator;
+       vector<vector<string>>::const_iterator row_iterator;
     public:
-        iterator(vector<vector<string>> itr);
+        iterator(vector<vector<string>>::const_iterator itr);
 
         const vector<string>& operator * () const;
         iterator& operator ++ ();
@@ -34,7 +34,7 @@ public:
 
     size_t GetRowCount() const;
     const vector<string>& GetRow(size_t rowIndex) const;
-    const string& GetCall(int rowIndex, int columnIndex) const;
+    const string& GetCell(int rowIndex, int columnIndex) const;
     const vector<string>& operator [](size_t rowInex) const;
     
    	iterator begin() const;
