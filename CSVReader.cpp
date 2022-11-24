@@ -58,15 +58,15 @@ bool CSVReader::iterator::operator != (const CSVReader::iterator& itr) const
     return false;
 }
 
-bool CSVReader::ReadFile(const std::string& filePath)
+bool CSVReader::ReadFile(const string& filePath)
 {
-    std::ifstream file(filePath);
+    ifstream file(filePath);
     if (true == file.fail())
     {
-        throw std::ifstream::failure("fail to open file(path:" + filePath + ")");
+        throw ifstream::failure("fail to open file(path:" + filePath + ")");
     }
 
-    std::string stream((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    string stream((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
     return ReadStream(stream);
 }
 
@@ -160,27 +160,27 @@ CSVReader::iterator CSVReader::end() const
     return iterator(rows.end());
 }
 
-const std::vector<std::string>& CSVReader::GetRow(size_t rowIndex) const
+const vector<string>& CSVReader::GetRow(size_t rowIndex) const
 {
     if (0 > rowIndex || rows.size() <= rowIndex)
     {
-        throw std::out_of_range("out of range row num:" + std::to_string(rowIndex));
+        throw out_of_range("out of range row num:" + to_string(rowIndex));
     }
     return rows[rowIndex];
 }
 
-const std::vector<std::string>& CSVReader::operator [] (size_t rowIndex) const
+const vector<string>& CSVReader::operator [] (size_t rowIndex) const
 {
     return GetRow(rowIndex);
 }
 
-const std::string& CSVReader::GetCell(int rowIndex, int columnIndex) const
+const string& CSVReader::GetCell(int rowIndex, int columnIndex) const
 {
-    const std::vector<std::string>& row = GetRow(rowIndex);
+    const vector<string>& row = GetRow(rowIndex);
 
     if (0 > columnIndex || row.size() <= columnIndex)
     {
-        throw std::out_of_range("invalid csv column index:" + std::to_string(columnIndex));
+        throw out_of_range("invalid csv column index:" + to_string(columnIndex));
     }
     return row[columnIndex];
 }
