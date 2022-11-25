@@ -2,6 +2,10 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <sstream>
 #include <istream>
 #include <list>
 #include <map>
@@ -17,7 +21,6 @@ using namespace std;
 #define TEST_HAM_SIZE 20
 #define TEST_SPAM_SIZE 20
 vector<string> split(string str, char delimiter);
-bool cmp(const pair<string, int> &a, const pair<string, int> &b);
 
 int main(int argc, char *argv[]) {
     // SetConsoleOutputCP(CP_UTF8);
@@ -80,7 +83,7 @@ int main(int argc, char *argv[]) {
                             }
                         }
                         for(string t : one_data){
-                            if(word_in_ham[t] == 0) {
+                            if(word_in_ham[t] == 1) {
                                 word_in_ham[t]= word_in_ham[t] + 1;
                                 cout << "insert ";
                             }
@@ -118,11 +121,12 @@ int main(int argc, char *argv[]) {
                         }
                         i++;
                         for (string t : one_data) {
-                            if(word_in_ham[t] == 0) {
+                           if(word_in_ham[t] == 1) {
                                 word_in_ham[t]= word_in_ham[t] + 1;
                                 cout << "insert ";
                             }
                             else word_in_ham[t]= word_in_ham[t] + 1;
+                           
                             // word_in_ham[t] = ++word_in_ham[t];
                            cout << "t: " << t << " word_in_ham[t]: "<< word_in_ham[t] << endl;
                         }
