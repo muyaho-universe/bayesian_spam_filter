@@ -22,14 +22,10 @@ void file_parsing(string file_name, map<string, int>& words_map, list<string> st
 int test_parsing(string file_name, map<string, int> words_map1, map<string, int> words_map2, list<string> stopwords_list, string type);
 
 int main(int argc, char *argv[]) {
-    // SetConsoleOutputCP(CP_UTF8);
     list<string> special{"+","\'", "~",  "!", "@", "#", "$", "%", "^", "&", "*",  "(",  ")", "-", "<", ">", "?", "/", ".", ",",  "\n", " ", ":", ";", "",  "-", "\"", "\'", "_", "{",  "}",  "[", "]", "|", "\"\"", "\"Subject:"}; //, 
     list<string> stopwords_list;
     map<string, int> word_in_ham;
     map<string, int> word_in_spam;
-
-    //   ifstream train_file_ham("./csv/train/dataset_ham_train100.csv");
-    // ifstream train_file_ham(".\\csv\\train\\dataset_ham_train100.csv");
     string ham_file = ".\\csv\\train\\dataset_ham_train100.csv";
     string spam_file = ".\\csv\\train\\dataset_spam_train100.csv";
     string test_ham_file = ".\\csv\\test\\dataset_ham_test20.csv";
