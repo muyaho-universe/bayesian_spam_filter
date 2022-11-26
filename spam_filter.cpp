@@ -58,8 +58,6 @@ int main(int argc, char *argv[]) {
     int spam_spam = test_parsing(test_spam_file, word_in_ham, word_in_spam, stopwords_list, "spam");
     cout << "==============================================" << endl;
     cout << "ham_ham: " << ham_ham << " spam_spam: " << spam_spam << endl;
-       
-   
     return 0;
 }
 
@@ -187,7 +185,6 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
     string ham_spam = type;
     int size = 20;
     int stop = 121;
-    bool test = true;
     
     ifstream file(file_name);
     string str_buf;
@@ -195,7 +192,7 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
     set<string> one_data;
 
     int count = 0;
-    double threshold = 0.6; 
+    double threshold = 0.95; 
 
     if (file.is_open()) {
         list<string> text_input;
@@ -203,7 +200,6 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
             vector<string> line = split(str_buf, '\n');
             if (first) {
                 string t1 = to_string(i);
-                
                 if (i == stop) {
                     if ((line.size() > 1) && (line.at(line.size() - 1)[line.at(line.size() - 1).size() - 1] == '\"')) { // 진짜 끝나면
                         for (int a = 0; a < line.size(); a++) {
@@ -228,13 +224,13 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                             }
                         }
                         r  = p/(p+q);
-                        cout << "r: " << r<< " p: " << p << " q: " << q<< endl;
+                        cout << "threshold: " << threshold << " r: " << r << endl;
                         if(threshold> r){
-                            cout << "Ham!!" << endl; 
+                            // cout << "Ham!!" << endl; 
                             (type == "ham") ? count++: 0;
                         }
                         else{
-                            cout <<  "Spam!!"  << endl; 
+                            // cout <<  "Spam!!"  << endl; 
                             (type == "spam") ? count++: 0;
                         }
                         i++;
@@ -276,17 +272,18 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                             }
                         }
                         r  = p/(p+q);
-                        cout << "r: " << r<< " p: " << p << " q: " << q<< endl; 
+                        cout << "threshold: " << threshold << " r: " << r << endl;
                         if(threshold> r){
-                            cout << "Ham!!" << endl;
-                            (type == "ham") ? count++: 0; 
+                            // cout << "Ham!!" << endl; 
+                            (type == "ham") ? count++: 0;
                         }
                         else{
-                            cout <<  "Spam!!"  << endl;
-                            (type == "spam") ? count++: 0; 
+                            // cout <<  "Spam!!"  << endl; 
+                            (type == "spam") ? count++: 0;
                         }
                         
                         one_data.clear();
+                        
                         first = false;
                     } 
                     else {  // 끝 문자가 아닐 때
