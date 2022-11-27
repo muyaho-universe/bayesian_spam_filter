@@ -9,7 +9,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-// #include <Windows.h>
 
 using namespace std;
 #define TRAIN_HAM_SIZE 100
@@ -18,12 +17,11 @@ using namespace std;
 #define TEST_SPAM_SIZE 20
 vector<string> split(string str, char delimiter);
 bool cmp(const pair<string, int> &a, const pair<string, int> &b);
-void file_parsing(string file_name, map<string, int>& words_map, list<string> stopwords_list, string type); 
-int test_parsing(string file_name, map<string, int> words_map1, map<string, int> words_map2, list<string> stopwords_list, string type);
+void file_parsing(string file_name, map<string, int>& words_map, string type); 
+int test_parsing(string file_name, map<string, int> words_map1, map<string, int> words_map2, string type);
 
 int main(int argc, char *argv[]) {
     list<string> special{"+","\'", "~",  "!", "@", "#", "$", "%", "^", "&", "*",  "(",  ")", "-", "<", ">", "?", "/", ".", ",",  "\n", " ", ":", ";", "",  "-", "\"", "\'", "_", "{",  "}",  "[", "]", "|", "\"\"", "\"Subject:"}; //, 
-    list<string> stopwords_list;
     map<string, int> word_in_ham;
     map<string, int> word_in_spam;
     // for macOS "./csv/train/dataset_ham_train100.csv"  use this form. This code is for window OS.
@@ -32,27 +30,12 @@ int main(int argc, char *argv[]) {
     string test_ham_file = ".\\csv\\test\\dataset_ham_test20.csv";
     string test_spam_file = ".\\csv\\test\\dataset_spam_test20.csv";
     
+    file_parsing(ham_file, word_in_ham,  "ham");
+    file_parsing(spam_file, word_in_spam,  "spam");
 
-    string line;
-    ifstream stopwords_file("stopwords.txt");
-    if (stopwords_file.is_open()) {
-        while (getline(stopwords_file, line)) {
-            stopwords_list.push_back(line);
-        }
-        stopwords_file.close();
-    } 
-    else {
-        cout << "Unable to open file";
-    }
-    
-    file_parsing(ham_file, word_in_ham, stopwords_list, "ham");
-    file_parsing(spam_file, word_in_spam, stopwords_list, "spam");
-    vector<pair<string, int>> words_in_ham_order(word_in_ham.begin(), word_in_ham.end());
-    vector<pair<string, int>> words_in_spam_order(word_in_spam.begin(), word_in_spam.end());
-
-    int ham_ham = test_parsing(test_ham_file, word_in_ham, word_in_spam, stopwords_list, "ham");
+    int ham_ham = test_parsing(test_ham_file, word_in_ham, word_in_spam,  "ham");
     cout << "==============================================" << endl;
-    int spam_spam = test_parsing(test_spam_file, word_in_ham, word_in_spam, stopwords_list, "spam");
+    int spam_spam = test_parsing(test_spam_file, word_in_ham, word_in_spam,  "spam");
     cout << "==============================================" << endl;
     cout << "ham_ham: " << ham_ham << " spam_spam: " << spam_spam << endl;
     return 0;
@@ -76,14 +59,12 @@ bool cmp(const pair<string, int> &a, const pair<string, int> &b) {
     return a.second > b.second;
 }
 
-void file_parsing(string file_name, map<string, int>& words_map, list<string> stopwords_list, string type){
+void file_parsing(string file_name, map<string, int>& words_map, string type){
     list<string> special{"+","\'", "~",  "!", "@", "#", "$", "%", "^", "&", "*",  "(",  ")", "-", "<", ">", "?", "/", ".", ",",  "\n", " ", ":", ";", "",  "-", "\"", "\'", "_", "{",  "}",  "[", "]", "|", "\"\"", "\"Subject:"};
     int i = 2;
     string ham_spam = type;
-    int size = 100;
     int stop = 101;
     bool test = false;
-    
     
     ifstream file(file_name);
     string str_buf;
@@ -105,7 +86,7 @@ void file_parsing(string file_name, map<string, int>& words_map, list<string> st
                                 if (a == (line.size() - 1) && word[word.length() - 1] == '\"') {
                                     word = word.substr(0, word.length() - 1);
                                 }
-                                if ((find(stopwords_list.begin(), stopwords_list.end(), word) == stopwords_list.end()) && (find(special.begin(), special.end(), word) == special.end())) {
+                                if ((find(special.begin(), special.end(), word) == special.end())) {
                                     one_data.insert(word);
                                 }
                             }
@@ -124,7 +105,7 @@ void file_parsing(string file_name, map<string, int>& words_map, list<string> st
                         for (string t : line) {
                             vector<string> words = split(t, ' ');
                             for (string word : words) {
-                                if ((find(stopwords_list.begin(), stopwords_list.end(), word) == stopwords_list.end()) && (find(special.begin(), special.end(), word) == special.end())) {
+                                if ((find(special.begin(), special.end(), word) == special.end())) {
                                     one_data.insert(word);
                                 }
                             }
@@ -140,7 +121,7 @@ void file_parsing(string file_name, map<string, int>& words_map, list<string> st
                                 if (a == (line.size() - 2) && word[word.length() - 1] == '\"') {
                                     word = word.substr(0, word.length() - 1);
                                 }
-                                if ((find(stopwords_list.begin(), stopwords_list.end(), word) == stopwords_list.end()) && (find(special.begin(), special.end(), word) == special.end())) {
+                                if ((find(special.begin(), special.end(), word) == special.end())) {
                                     one_data.insert(word);
                                 }
                             }
@@ -159,7 +140,7 @@ void file_parsing(string file_name, map<string, int>& words_map, list<string> st
                         for (string t : line) {
                             vector<string> words = split(t, ' ');
                             for (string word : words) {
-                                if ((find(stopwords_list.begin(), stopwords_list.end(), word) == stopwords_list.end()) && (find(special.begin(), special.end(), word) == special.end())) {
+                                if ((find(special.begin(), special.end(), word) == special.end())) {
                                     one_data.insert(word);
                                 }
                             }
@@ -176,11 +157,10 @@ void file_parsing(string file_name, map<string, int>& words_map, list<string> st
         file.close();
     }
 }
-int test_parsing(string file_name, map<string, int> words_map1, map<string, int> words_map2, list<string> stopwords_list, string type){
+int test_parsing(string file_name, map<string, int> words_map1, map<string, int> words_map2, string type){
     list<string> special{"+","\'", "~",  "!", "@", "#", "$", "%", "^", "&", "*",  "(",  ")", "-", "<", ">", "?", "/", ".", ",",  "\n", " ", ":", ";", "",  "-", "\"", "\'", "_", "{",  "}",  "[", "]", "|", "\"\"", "\"Subject:"};
     int i = 102;
     string ham_spam = type;
-    int size = 20;
     int stop = 121;
     
     ifstream file(file_name);
@@ -189,8 +169,8 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
     set<string> one_data;
 
     int count = 0;
-    double threshold = 0.95; 
-
+    double threshold = 0.6; 
+    int popo = 0;
     if (file.is_open()) {
         list<string> text_input;
         while (getline(file, str_buf, ',')) {
@@ -206,7 +186,7 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                                 if (a == (line.size() - 1) && word[word.length() - 1] == '\"') {
                                     word = word.substr(0, word.length() - 1);
                                 }
-                                if ((find(stopwords_list.begin(), stopwords_list.end(), word) == stopwords_list.end()) && (find(special.begin(), special.end(), word) == special.end())) {
+                                if ((find(special.begin(), special.end(), word) == special.end())) {
                                     one_data.insert(word);
                                 }
                             }
@@ -221,7 +201,8 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                             }
                         }
                         r  = p/(p+q);
-                        cout << "threshold: " << threshold << " r: " << r << endl;
+                        popo++;
+                        cout << popo << ": "<<"p: " << p << " q: " << q << " " << "threshold: " << threshold << " r: " << r << endl;
                         if(threshold> r){
                             cout << "Ham!!" << endl; 
                             (type == "ham") ? count++: 0;
@@ -237,7 +218,7 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                         for (string t : line) {
                             vector<string> words = split(t, ' ');
                             for (string word : words) {
-                                if ((find(stopwords_list.begin(), stopwords_list.end(), word) == stopwords_list.end()) && (find(special.begin(), special.end(), word) == special.end())) {
+                                if ((find(special.begin(), special.end(), word) == special.end())) {
                                     one_data.insert(word);
                                 }
                             }
@@ -253,7 +234,7 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                                 if (a == (line.size() - 2) && word[word.length() - 1] == '\"') {
                                     word = word.substr(0, word.length() - 1);
                                 }
-                                if ((find(stopwords_list.begin(), stopwords_list.end(), word) == stopwords_list.end()) && (find(special.begin(), special.end(), word) == special.end())) {
+                                if ((find(special.begin(), special.end(), word) == special.end())) {
                                     one_data.insert(word);
                                 }
                             }
@@ -269,6 +250,8 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                             }
                         }
                         r  = p/(p+q);
+                        popo++;
+                        cout << popo << ": "<<"p: " << p << " q: " << q << " ";
                         cout << "threshold: " << threshold << " r: " << r << endl;
                         if(threshold> r){
                             cout << "Ham!!" << endl; 
@@ -287,7 +270,7 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                         for (string t : line) {
                             vector<string> words = split(t, ' ');
                             for (string word : words) {
-                                if ((find(stopwords_list.begin(), stopwords_list.end(), word) == stopwords_list.end()) && (find(special.begin(), special.end(), word) == special.end())) {
+                                if ((find(special.begin(), special.end(), word) == special.end())) {
                                     one_data.insert(word);
                                 }
                             }
