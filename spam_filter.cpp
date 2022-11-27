@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
     list<string> stopwords_list;
     map<string, int> word_in_ham;
     map<string, int> word_in_spam;
+    // for macOS "./csv/train/dataset_ham_train100.csv"  use this form. This code is for window OS.
     string ham_file = ".\\csv\\train\\dataset_ham_train100.csv";
     string spam_file = ".\\csv\\train\\dataset_spam_train100.csv";
     string test_ham_file = ".\\csv\\test\\dataset_ham_test20.csv";
@@ -222,11 +223,11 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                         r  = p/(p+q);
                         cout << "threshold: " << threshold << " r: " << r << endl;
                         if(threshold> r){
-                            // cout << "Ham!!" << endl; 
+                            cout << "Ham!!" << endl; 
                             (type == "ham") ? count++: 0;
                         }
                         else{
-                            // cout <<  "Spam!!"  << endl; 
+                            cout <<  "Spam!!"  << endl; 
                             (type == "spam") ? count++: 0;
                         }
                         i++;
@@ -270,11 +271,11 @@ int test_parsing(string file_name, map<string, int> words_map1, map<string, int>
                         r  = p/(p+q);
                         cout << "threshold: " << threshold << " r: " << r << endl;
                         if(threshold> r){
-                            // cout << "Ham!!" << endl; 
+                            cout << "Ham!!" << endl; 
                             (type == "ham") ? count++: 0;
                         }
                         else{
-                            // cout <<  "Spam!!"  << endl; 
+                            cout <<  "Spam!!"  << endl; 
                             (type == "spam") ? count++: 0;
                         }
                         
